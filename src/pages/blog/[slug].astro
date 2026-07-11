@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <article>
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      <time datetime={post.data.pubDate.toISOString()}>
+        {
+          post.data.pubDate.toLocaleDateString('en-CA', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            timeZone: 'America/Toronto',
+          })
+        }
+      </time>
+      &middot; {post.data.author}
+    </p>
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+  <p><a href="/">&larr; all posts</a></p>
+</Layout>
+
+<style>
+  .meta {
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--fg);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 1.25rem 0;
+  }
+
+  .prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--fg);
+    margin: 2rem 0;
+  }
+
+  article + p {
+    margin-top: 2rem;
+  }
+</style>

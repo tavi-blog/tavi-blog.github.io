@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout
+  title="Tavi"
+  description="Short-form commentary on world events, from wherever I happen to have standing."
+>
+  {
+    posts.length === 0 ? (
+      <p>Nothing published yet.</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            <time datetime={post.data.pubDate.toISOString()}>
+              {post.data.pubDate.toLocaleDateString('en-CA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                timeZone: 'America/Toronto',
+              })}
+            </time>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Layout>
+
+<style>
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post-list li {
+    border-bottom: 1px solid var(--fg);
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .post-list li:first-child {
+    padding-top: 0;
+  }
+
+  .post-list a {
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+
+  .post-list a:hover {
+    text-decoration: underline;
+  }
+
+  .post-list time {
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+</style>
