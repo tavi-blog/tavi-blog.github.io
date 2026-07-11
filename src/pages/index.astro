@@ -7,10 +7,7 @@ const posts = (await getCollection('blog')).sort(
 );
 ---
 
-<Layout
-  title="Tavi"
-  description="Short-form commentary on world events, from wherever I happen to have standing."
->
+<Layout description="Short-form commentary on world events, from wherever I happen to have standing.">
   {
     posts.length === 0 ? (
       <p>Nothing published yet.</p>
@@ -18,7 +15,7 @@ const posts = (await getCollection('blog')).sort(
       <ul class="post-list">
         {posts.map((post) => (
           <li>
-            <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            <a href={`/${post.id}/`}>{post.data.title}</a>
             <time datetime={post.data.pubDate.toISOString()}>
               {post.data.pubDate.toLocaleDateString('en-CA', {
                 year: 'numeric',

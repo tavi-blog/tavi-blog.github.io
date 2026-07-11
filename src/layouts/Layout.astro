@@ -1,12 +1,13 @@
 ---
 interface Props {
-  title: string;
+  title?: string;
   description?: string;
 }
 
 const { title, description } = Astro.props;
-const siteTitle = 'Tavi';
-const pageTitle = title === siteTitle ? siteTitle : `${title} · ${siteTitle}`;
+const brandName = 'tavi';
+const siteTitle = 'tavi.blog';
+const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
 ---
 
 <!doctype html>
@@ -22,14 +23,14 @@ const pageTitle = title === siteTitle ? siteTitle : `${title} · ${siteTitle}`;
   <body>
     <header>
       <nav>
-        <a href="/">{siteTitle}</a>
+        <a href="/">{brandName}</a>
       </nav>
     </header>
     <main>
       <slot />
     </main>
     <footer>
-      <p>&copy; {new Date().getFullYear()} {siteTitle} &middot; <a href="/rss.xml">RSS</a></p>
+      <p>&copy; {new Date().getFullYear()} {brandName} &middot; <a href="/rss.xml">RSS</a></p>
     </footer>
     <style is:global>
       :root {

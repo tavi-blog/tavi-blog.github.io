@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 export async function GET(context) {
   const posts = await getCollection('blog');
   return rss({
-    title: 'Tavi',
+    title: 'tavi',
     description: 'Short-form commentary on world events, from wherever I happen to have standing.',
     site: context.site,
     items: posts
@@ -14,7 +14,7 @@ export async function GET(context) {
         pubDate: post.data.pubDate,
         description: post.data.description,
         author: post.data.author,
-        link: `/blog/${post.id}/`,
+        link: `/${post.id}/`,
       })),
   });
 }
