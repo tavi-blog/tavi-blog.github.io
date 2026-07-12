@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
-    "@fontsource/ibm-plex-mono": "^5.2.7",
-    "@fontsource/ibm-plex-serif": "^5.2.7",
+    "@fontsource/eb-garamond": "^5.2.7",
+    "@fontsource/space-mono": "^5.2.9",
     "astro": "^7.0.7"
   }
 }

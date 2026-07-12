@@ -1,9 +1,9 @@
 ---
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/700.css';
-import '@fontsource/ibm-plex-serif/400.css';
-import '@fontsource/ibm-plex-serif/700.css';
-import '@fontsource/ibm-plex-serif/400-italic.css';
+import '@fontsource/space-mono/400.css';
+import '@fontsource/space-mono/700.css';
+import '@fontsource/eb-garamond/400.css';
+import '@fontsource/eb-garamond/600.css';
+import '@fontsource/eb-garamond/400-italic.css';
 
 interface Props {
   title?: string;
@@ -41,8 +41,8 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
       :root {
         --fg: #000;
         --bg: #fff;
-        --font-mono: 'IBM Plex Mono', monospace;
-        --font-serif: 'IBM Plex Serif', Georgia, serif;
+        --font-mono: 'Space Mono', monospace;
+        --font-serif: 'EB Garamond', Georgia, serif;
         color-scheme: light;
       }
 
@@ -72,8 +72,8 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
 
       body {
         font-family: var(--font-serif);
-        font-size: 18px;
-        line-height: 1.6;
+        font-size: 20px;
+        line-height: 1.65;
       }
 
       a {
@@ -88,7 +88,7 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
       /* Fixed unit, not ch: header/footer are mono and main/body are serif,
          and ch is relative to each element's own font, so a font-relative
          unit here would make the top and bottom rules different widths.
-         42rem approximates the original ~65ch reading measure. */
+         42rem approximates the ~65ch reading measure this is standing in for. */
       header,
       main,
       footer {
@@ -99,8 +99,17 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
       }
 
       header {
-        border-bottom: 1px solid var(--fg);
         padding-top: 2rem;
+      }
+
+      /* The border lives on nav, not header: header's own box includes its
+         padding, so a border on header would start 1.5rem to the left of
+         where the padded text actually sits. nav has no padding of its own,
+         so it exactly fills header's content box and the line lands flush
+         with the text's left edge. */
+      header nav {
+        display: block;
+        border-bottom: 1px solid var(--fg);
         padding-bottom: 1.5rem;
       }
 
@@ -119,12 +128,18 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
       }
 
       footer {
+        padding-bottom: 2rem;
+      }
+
+      /* Same reasoning as header nav: border on the inner p, not on footer
+         itself, so it aligns with the padded text instead of footer's
+         full (padding-inclusive) box. */
+      footer p {
         font-family: var(--font-mono);
         border-top: 1px solid var(--fg);
         padding-top: 1.5rem;
-        padding-bottom: 2rem;
-        font-size: 1.1rem;
-        font-weight: 700;
+        margin: 0;
+        font-size: 0.75rem;
       }
 
       h1,
@@ -136,7 +151,7 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
       }
 
       h1 {
-        font-size: 2.25rem;
+        font-size: 1.75rem;
       }
 
       img {

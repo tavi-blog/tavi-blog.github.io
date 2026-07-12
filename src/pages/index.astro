@@ -15,15 +15,18 @@ const posts = (await getCollection('blog')).sort(
       <ul class="post-list">
         {posts.map((post) => (
           <li>
-            <a href={`/${post.id}/`}>{post.data.title}</a>
-            <time datetime={post.data.pubDate.toISOString()}>
-              {post.data.pubDate.toLocaleDateString('en-CA', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                timeZone: 'America/Toronto',
-              })}
-            </time>
+            <div class="post-list-row">
+              <a href={`/${post.id}/`}>{post.data.title}</a>
+              <time datetime={post.data.pubDate.toISOString()}>
+                {post.data.pubDate.toLocaleDateString('en-CA', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  timeZone: 'America/Toronto',
+                })}
+              </time>
+            </div>
+            {post.data.description && <p class="excerpt">{post.data.description}</p>}
           </li>
         ))}
       </ul>
@@ -41,6 +44,13 @@ const posts = (await getCollection('blog')).sort(
   .post-list li {
     border-bottom: 1px solid var(--fg);
     padding: 1.5rem 0;
+  }
+
+  .post-list li:first-child {
+    padding-top: 0;
+  }
+
+  .post-list-row {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -48,14 +58,10 @@ const posts = (await getCollection('blog')).sort(
     flex-wrap: wrap;
   }
 
-  .post-list li:first-child {
-    padding-top: 0;
-  }
-
   .post-list a {
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     text-decoration: none;
   }
 
@@ -69,5 +75,12 @@ const posts = (await getCollection('blog')).sort(
     text-transform: uppercase;
     letter-spacing: 0.08em;
     white-space: nowrap;
+  }
+
+  .post-list .excerpt {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    line-height: 1.65;
+    margin: 0.75rem 0 0 0;
   }
 </style>

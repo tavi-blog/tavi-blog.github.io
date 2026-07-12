@@ -29,7 +29,7 @@ const { Content } = await render(post);
         }
       </time>
       {' · '}
-      {post.data.author}
+      <span class="byline-author">{post.data.author}</span>
     </p>
     <div class="prose">
       <Content />
@@ -49,10 +49,17 @@ const { Content } = await render(post);
     margin-bottom: 2rem;
   }
 
+  /* The byline itself is mono-caps (date included), but the author name is
+     the "tavi" brand mark and must never render as capital TAVI, so it
+     opts back out of the uppercase transform it would otherwise inherit. */
+  .byline-author {
+    text-transform: none;
+  }
+
   .prose {
     font-family: var(--font-serif);
-    font-size: 18px;
-    line-height: 1.6;
+    font-size: 20px;
+    line-height: 1.65;
   }
 
   .prose :global(p) {
