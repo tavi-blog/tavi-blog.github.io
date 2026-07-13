@@ -26,21 +26,24 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
     <link rel="icon" href="data:," />
   </head>
   <body>
-    <header>
-      <nav>
-        <a href="/">{siteTitle}</a>
-      </nav>
-    </header>
-    <main>
-      <slot />
-    </main>
-    <footer>
-      <p>&copy; {new Date().getFullYear()} {siteTitle} &middot; <a href="/rss.xml">RSS</a></p>
-    </footer>
+    <div class="page-wrap">
+      <header>
+        <nav>
+          <a href="/">{siteTitle}</a>
+        </nav>
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer>
+        <p>&copy; {new Date().getFullYear()} {siteTitle} &middot; <a href="/rss.xml">RSS</a></p>
+      </footer>
+    </div>
     <style is:global>
       :root {
         --fg: #000;
         --bg: #fff;
+        --dot: rgba(0, 0, 0, 0.18);
         --font-mono: 'IBM Plex Mono', monospace;
         --font-serif: 'IBM Plex Serif', Georgia, serif;
         color-scheme: light;
@@ -50,6 +53,7 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
         :root {
           --fg: #fff;
           --bg: #000;
+          --dot: rgba(255, 255, 255, 0.15);
           color-scheme: dark;
         }
       }
@@ -62,18 +66,30 @@ const pageTitle = title ? `${title} · ${siteTitle}` : siteTitle;
         animation: none !important;
       }
 
-      html,
-      body {
+      html {
         margin: 0;
         padding: 0;
-        background: var(--bg);
-        color: var(--fg);
+        background-color: var(--bg);
+        background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+        background-size: 28px 28px;
+        min-height: 100%;
       }
 
       body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        color: var(--fg);
         font-family: var(--font-serif);
         font-size: 20px;
         line-height: 1.65;
+      }
+
+      .page-wrap {
+        max-width: 42rem;
+        margin: 0 auto;
+        background: var(--bg);
+        min-height: 100vh;
       }
 
       a {
