@@ -38,3 +38,120 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  newsletter:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send newsletter for new posts
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: |
+          python3 << 'PYEOF'
+          import os, json, re, glob, sys, urllib.request, urllib.error
+          from datetime import datetime
+
+          SENT_FILE = "newsletter-sent.json"
+          POSTS_DIR = "src/content/blog"
+          API_URL = "https://api.buttondown.com/v1/emails"
+          BASE_URL = "https://tavi-blog.github.io"
+          API_KEY = os.environ["BUTTONDOWN_API_KEY"]
+
+          sent = {}
+          if os.path.exists(SENT_FILE):
+              with open(SENT_FILE) as f:
+                  sent = json.load(f)
+
+          posts = sorted(glob.glob(f"{POSTS_DIR}/*.md"))
+          failed = False
+
+          for post_path in posts:
+              slug = os.path.basename(post_path)[:-3]
+              if slug == ".gitkeep" or slug in sent:
+                  continue
+
+              with open(post_path) as f:
+                  raw = f.read()
+
+              fm_match = re.match(r'^---\n(.*?)\n---\n', raw, re.DOTALL)
+              if not fm_match:
+                  print(f"Warning: skipping {slug} — no frontmatter found")
+                  continue
+
+              fm = fm_match.group(1)
+              body = raw[fm_match.end():].strip()
+
+              title_match = re.search(r'^title:\s*["\']?(.*?)["\']?\s*$', fm, re.MULTILINE)
+              date_match  = re.search(r'^pubDate:\s*["\']?(\d{4}-\d{2}-\d{2})', fm, re.MULTILINE)
+
+              if not title_match:
+                  print(f"Warning: skipping {slug} — no title in frontmatter")
+                  continue
+
+              full_title = title_match.group(1).strip("\"'")
+              subject = re.sub(r'^[^a-zA-Z0-9]+', '', full_title).strip()
+              raw_date = date_match.group(1) if date_match else ""
+
+              try:
+                  formatted_date = datetime.strptime(raw_date, "%Y-%m-%d").strftime("%B %-d, %Y")
+              except ValueError:
+                  formatted_date = raw_date
+
+              canonical = f"{BASE_URL}/{slug}/"
+              email_body = f"{full_title}\n{formatted_date} · {canonical}\n\n{body}"
+
+              payload = json.dumps({
+                  "subject": subject,
+                  "body": email_body,
+                  "status": "sent",
+              }).encode()
+
+              req = urllib.request.Request(
+                  API_URL,
+                  data=payload,
+                  headers={
+                      "Authorization": f"Token {API_KEY}",
+                      "Content-Type": "application/json",
+                  },
+                  method="POST",
+              )
+
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      result = json.loads(resp.read())
+                      email_id = result["id"]
+                  sent[slug] = {
+                      "buttondown_id": email_id,
+                      "subject": subject,
+                      "sent_at": raw_date,
+                  }
+                  # Write after each successful send so a mid-run failure
+                  # doesn't lose already-sent entries and cause duplicate sends.
+                  with open(SENT_FILE, "w") as f:
+                      json.dump(sent, f, indent=2)
+                  print(f"Sent: {subject} ({email_id})")
+              except urllib.error.HTTPError as e:
+                  err = e.read().decode()
+                  print(f"ERROR: Buttondown returned {e.code} for '{slug}': {err}", file=sys.stderr)
+                  failed = True
+
+          if failed:
+              # Exit non-zero to surface the error in the Actions UI.
+              # The deploy job already completed — this does not roll it back.
+              sys.exit(1)
+          PYEOF
+
+      - name: Commit updated sent log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add newsletter-sent.json
+          git diff --cached --quiet && echo "No new emails sent." && exit 0
+          git pull --rebase origin main
+          git commit -m "chore: update newsletter sent log [skip ci]"
+          git push origin main
