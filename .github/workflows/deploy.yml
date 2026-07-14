@@ -138,8 +138,19 @@ jobs:
                   print(f"Sent: {subject} ({email_id})")
               except urllib.error.HTTPError as e:
                   err = e.read().decode()
-                  print(f"ERROR: Buttondown returned {e.code} for '{slug}': {err}", file=sys.stderr)
-                  failed = True
+                  try:
+                      err_code = json.loads(err).get("code", "")
+                  except json.JSONDecodeError:
+                      err_code = ""
+                  if err_code == "email_duplicate":
+                      # Already sent outside the workflow; log it and move on.
+                      print(f"Note: '{slug}' already exists in Buttondown. Marking as sent.")
+                      sent[slug] = {"buttondown_id": None, "subject": subject, "sent_at": raw_date, "note": "duplicate_detected"}
+                      with open(SENT_FILE, "w") as f:
+                          json.dump(sent, f, indent=2)
+                  else:
+                      print(f"ERROR: Buttondown returned {e.code} for '{slug}': {err}", file=sys.stderr)
+                      failed = True
 
           if failed:
               # Exit non-zero to surface the error in the Actions UI.
