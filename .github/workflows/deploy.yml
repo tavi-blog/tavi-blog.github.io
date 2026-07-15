@@ -53,7 +53,7 @@ jobs:
           BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
         run: |
           python3 << 'PYEOF'
-          import os, json, re, glob, sys, urllib.request, urllib.error
+          import os, json, re, glob, sys, urllib.request, urllib.error, yaml
           from datetime import datetime
 
           SENT_FILE = "newsletter-sent.json"
@@ -83,19 +83,17 @@ jobs:
                   print(f"Warning: skipping {slug} — no frontmatter found")
                   continue
 
-              fm = fm_match.group(1)
+              fm_data = yaml.safe_load(fm_match.group(1))
               body = raw[fm_match.end():].strip()
 
-              title_match = re.search(r'^title:\s*["\']?(.*?)["\']?\s*$', fm, re.MULTILINE)
-              date_match  = re.search(r'^pubDate:\s*["\']?(\d{4}-\d{2}-\d{2})', fm, re.MULTILINE)
-
-              if not title_match:
+              full_title = fm_data.get('title', '')
+              if not full_title:
                   print(f"Warning: skipping {slug} — no title in frontmatter")
                   continue
 
-              full_title = title_match.group(1).strip("\"'")
               subject = re.sub(r'^[^a-zA-Z0-9]+', '', full_title).strip()
-              raw_date = date_match.group(1) if date_match else ""
+              pub_date = fm_data.get('pubDate', '')
+              raw_date = str(pub_date)[:10] if pub_date else ""
 
               try:
                   formatted_date = datetime.strptime(raw_date, "%Y-%m-%d").strftime("%B %-d, %Y")
