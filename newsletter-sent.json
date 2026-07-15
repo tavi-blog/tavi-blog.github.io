@@ -22,5 +22,10 @@
     "subject": "Newsletter Pipeline Test",
     "sent_at": "2026-07-13",
     "note": "test — deleted"
+  },
+  "the-spreadsheet-was-never-the-job": {
+    "buttondown_id": "em_3fadcn68ex80795pedpwzyrwp5",
+    "subject": "The Spreadsheet Was Never the Job",
+    "sent_at": "2026-07-15"
   }
 }

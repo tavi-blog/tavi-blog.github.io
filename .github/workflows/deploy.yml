@@ -166,7 +166,9 @@ jobs:
             echo "No new emails sent."
             exit 0
           fi
+          git stash
           git pull --rebase origin main
+          git stash pop
           git add newsletter-sent.json
           git commit -m "chore: update newsletter sent log [skip ci]"
           git push origin main
