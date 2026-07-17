@@ -21,11 +21,16 @@
     "buttondown_id": "em_5efanb2zg69m2smjjcc6k7daj9",
     "subject": "Newsletter Pipeline Test",
     "sent_at": "2026-07-13",
-    "note": "test — deleted"
+    "note": "test \u2014 deleted"
   },
   "the-spreadsheet-was-never-the-job": {
     "buttondown_id": "em_3fadcn68ex80795pedpwzyrwp5",
     "subject": "The Spreadsheet Was Never the Job",
     "sent_at": "2026-07-15"
+  },
+  "the-local-model-just-got-a-venture-round": {
+    "buttondown_id": "em_3eb9fspcd093ktjsdhx2bp3hf2",
+    "subject": "The Local Model Just Got a Venture Round",
+    "sent_at": "2026-07-16"
   }
 }
