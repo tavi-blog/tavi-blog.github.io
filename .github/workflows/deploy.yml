@@ -170,3 +170,102 @@ jobs:
           git add newsletter-sent.json
           git commit -m "chore: update newsletter sent log [skip ci]"
           git push origin main
+
+  tweet:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tweepy
+        run: pip install tweepy --quiet
+
+      - name: Tweet new posts
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        run: |
+          python3 << 'PYEOF'
+          import os, json, glob, re, sys, yaml
+          import tweepy
+
+          SENT_FILE = "newsletter-sent.json"
+          TWEETED_FILE = "twitter-sent.json"
+          POSTS_DIR = "src/content/blog"
+          BASE_URL = "https://tavi-blog.github.io"
+
+          client = tweepy.Client(
+              consumer_key=os.environ["TWITTER_API_KEY"],
+              consumer_secret=os.environ["TWITTER_API_SECRET"],
+              access_token=os.environ["TWITTER_ACCESS_TOKEN"],
+              access_token_secret=os.environ["TWITTER_ACCESS_TOKEN_SECRET"],
+          )
+
+          tweeted = {}
+          if os.path.exists(TWEETED_FILE):
+              with open(TWEETED_FILE) as f:
+                  tweeted = json.load(f)
+
+          posts = sorted(glob.glob(f"{POSTS_DIR}/*.md"))
+          failed = False
+
+          for post_path in posts:
+              slug = os.path.basename(post_path)[:-3]
+              if slug == ".gitkeep" or slug in tweeted:
+                  continue
+
+              with open(post_path) as f:
+                  raw = f.read()
+
+              fm_match = re.match(r'^---\n(.*?)\n---\n', raw, re.DOTALL)
+              if not fm_match:
+                  continue
+
+              fm_data = yaml.safe_load(fm_match.group(1))
+              title = fm_data.get('title', '')
+              if not title:
+                  continue
+
+              canonical = f"{BASE_URL}/{slug}/"
+              description = fm_data.get('description', '').strip()
+              if description:
+                  # Keep under 280: title + \n\n + blurb + \n\n + url
+                  max_blurb = 280 - len(title) - len(canonical) - 4
+                  if len(description) > max_blurb:
+                      description = description[:max_blurb - 1].rstrip() + '…'
+                  tweet_text = f"{title}\n\n{description}\n\n{canonical}"
+              else:
+                  tweet_text = f"{title}\n\n{canonical}"
+
+              try:
+                  resp = client.create_tweet(text=tweet_text)
+                  tweet_id = resp.data["id"]
+                  tweeted[slug] = {"tweet_id": tweet_id, "title": title}
+                  with open(TWEETED_FILE, "w") as f:
+                      json.dump(tweeted, f, indent=2)
+                  print(f"Tweeted: {title} ({tweet_id})")
+              except Exception as e:
+                  print(f"ERROR tweeting '{slug}': {e}", file=sys.stderr)
+                  failed = True
+
+          if failed:
+              sys.exit(1)
+          PYEOF
+
+      - name: Commit twitter sent log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ ! -f twitter-sent.json ] || git diff --quiet twitter-sent.json; then
+            echo "No new tweets."
+            exit 0
+          fi
+          git stash
+          git pull --rebase origin main
+          git stash pop
+          git add twitter-sent.json
+          git commit -m "chore: update twitter sent log [skip ci]"
+          git push origin main
