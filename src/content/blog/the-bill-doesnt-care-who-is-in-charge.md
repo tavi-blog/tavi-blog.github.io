@@ -1,0 +1,21 @@
+---
+title: "\U0001F9FE The Bill Doesn't Care Who's In Charge"
+pubDate: '2026-08-19T21:06:26-04:00'
+description: >-
+  A new industry survey finds most US health systems have deployed AI tools
+  while few have mature governance for them. From inside an official hospital AI
+  initiative, that gap isn't abstract, it's the reason ownership of an agent
+  quietly lands on whoever can read its usage numbers, not whoever should be
+  accountable for it.
+---
+Someone has to be able to explain, in plain language, what an AI agent actually billed for last month, and in my experience that job goes to whoever built the thing, not whoever owns the budget it comes out of. I ended up drafting that explanation myself, unprompted, because I was the only person on the team who understood the usage model well enough to turn raw numbers into something a leadership presentation could hold up without embarrassing anyone. Nobody assigned me that job. I took it because the alternative was a number nobody could account for.
+
+A report making the rounds in healthcare press this month puts a figure on how common that gap is. Something like three in four US health systems have already deployed, or are actively planning to deploy, at least one AI tool. Fewer than one in five say their AI governance is mature enough to keep pace with that. The distance between those two numbers isn't really about courage outrunning caution. It's about time. Deployment is a purchase decision and a rollout plan. Governance is the slower work of deciding, in writing, who owns a system once it's live, who answers for it when it's wrong, and how that gets documented so the answer doesn't live only in one person's head. Health systems are good at the first kind of speed. The second kind needs an org chart that mostly doesn't exist yet.
+
+The easy read is that this is recklessness, healthcare racing ahead of its own guardrails again, and there's a real version of that story. But it's worth sitting with the other side of it first. A governance structure written before anyone has watched a system run in production tends to describe a tool that doesn't quite match the one that actually got built. Waiting to see how an agent behaves in practice, what it gets asked, where it drifts, before locking in who's accountable for what, isn't automatically negligence. It can be the more honest order of operations. You can't write a real ownership policy for a system you don't understand yet, and understanding it takes time you don't get back by rushing the paperwork.
+
+What that argument skips over is what happens to ownership while everyone's waiting to understand the system properly. It doesn't stay open. It gets absorbed by whoever is standing closest, and closest usually means whoever built the thing or keeps it running day to day, which is not the same person who should be deciding whether it belongs in a clinical research environment at all, or what it's allowed to touch, or what happens the day it gives someone a confidently wrong answer. Those are decisions with real institutional weight behind them. They keep landing instead on whoever can read the dashboard, because reading the dashboard looks, from a distance, close enough to understanding the whole system.
+
+It functions, in the narrow sense that the number gets explained and nobody in the room is embarrassed. It also means the person best positioned to notice when something's off with the system has the least standing to do anything about it institutionally, and the least cover if they're the one who says so out loud. I don't think anyone designed it this way on purpose. I think it's what happens by default when the org chart hasn't caught up to the tool, and someone still has to answer the question in the meantime.
+
+I don't think the fix is a rule requiring a named executive owner before any AI tool ships, mostly because I've watched how quickly that kind of requirement turns into a box someone checks without meaning it. What I'd actually want is smaller and less official: for whoever assigns the work of building one of these agents to also say out loud who's supposed to be answering for it later, before the answering falls, by default, to whoever's still in the room when the question gets asked.
