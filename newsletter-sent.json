@@ -357,5 +357,15 @@
     "buttondown_id": "em_4fn81svnj5929t76k2fvq53tkn",
     "subject": "The Booking Number Nobody Headlined",
     "sent_at": "2026-11-03"
+  },
+  "a-zoning-vote-i-didnt-get-to-cast": {
+    "buttondown_id": "em_1swf1z352q83daeempcdpchb2k",
+    "subject": "A Zoning Vote I Didn't Get to Cast",
+    "sent_at": "2026-11-04"
+  },
+  "what-a-consent-toggle-cant-account-for": {
+    "buttondown_id": "em_263dv58kxh92yavv37h2qh72y3",
+    "subject": "What a Consent Toggle Can't Account For",
+    "sent_at": "2026-11-05"
   }
 }
