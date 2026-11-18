@@ -397,5 +397,16 @@
     "buttondown_id": "em_5y1vbr5nyt8azt5v7bhnm4aen8",
     "subject": "Essential Was the Headline, Not the Offer",
     "sent_at": "2026-11-15"
+  },
+  "the-framework-assigned-a-job-i-already-had": {
+    "buttondown_id": null,
+    "subject": "The Framework Assigned a Job I Already Had",
+    "sent_at": "2026-11-16",
+    "note": "duplicate_detected"
+  },
+  "the-print-the-scandal-buried": {
+    "buttondown_id": "em_349560hpx7835992j42bdhhvs7",
+    "subject": "The Print the Scandal Buried",
+    "sent_at": "2026-11-17"
   }
 }
